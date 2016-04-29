@@ -38,5 +38,3 @@ var data    = [addRow(`"1"`, `"activity 1"`, `new Date(2015,00,01,0,0,0)`, `new 
               ,addRow(`"2"`, `"activity 2"`, `new Date(2015,01,01,0,0,0)`, `new Date(2015,07,10,23,59,59)`, `""`)];
               
 drawChart(`data`, `options`);
-
-**Executando exemplo** http://jonathanarodr.github.io/javascript-timelinechart/

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gráfico</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/chart.min.css">
+        <script type="text/javascript" src="js/chart.min.js"></script>
+        <script type="text/javascript" src="example.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,500' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <button onclick="simulateChart('month', new Date(2015,0,01,0,0,0), new Date(2015,11,31,0,0,0));">month</button> <button onclick="simulateChart('day', new Date(2015,0,01,0,0,0), new Date(2015,0,31,0,0,0));">day</button> <button onclick="simulateChart('hour', new Date(2015,0,01,07,0,0), new Date(2015,0,01,23,59,59));">hour</button>
+        <div id="chart">
+            <div id="chart_title" class="titleCenter"></div>            
+            <div id="chart_data"></div>
+        </div>
+    </body>
+</html>

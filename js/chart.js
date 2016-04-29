@@ -119,6 +119,15 @@ function calcProgress(mode, startChart, start, end) {
     return progress;
 }
 
+function customChart(chartMode, start, end, title) {
+    var options = {
+        mode: {type: chartMode} //month,day,hour
+       ,title: {value: title}
+       ,time: {start: start, end: end}};
+   
+    return options;
+}
+
 function addRow(id, value, start, end, background) {
     var data = {id: id
                 ,value: value

@@ -13,9 +13,8 @@ arrayColor[8] = "#566887";
 function randomColor(background, color) {
     if (background === "") {
         return arrayColor[color-1];
-    } else {
-        return background;
     }
+    return background;
 }
 
 function calcMilliseconds(start, end) {
@@ -41,9 +40,8 @@ function millisecondsToSeconds(millis) {
 function stringLimit(val){    
     if (val.toString().length > 13) {
         return val.substring(0,10) + "...";
-    } else {
-        return val;
     }
+    return val;
 }
 
 function formatMonth(month) {
@@ -132,32 +130,35 @@ function addRow(id, value, start, end, background) {
 }
 
 function drawChart(dataTable, options){
-    var htmlProc = "";
-    var htmlData = "";
-    var htmlSubt = "<div class='subtitle'><ul>";
-    var dataAux  = null;
-    var screenW  = 0;
-    var id       = "";
-    var color    = 1;
-    var colorAux = "";
-    var isIE     = /*@cc_on!@*/false || !!document.documentMode;
+    var htmlProc  = "";
+    var htmlData  = "";
+    var htmlSubt  = "<div class='subtitle'><ul>";
+    var dataAux   = null;
+    var dataLocal = null;
+    var screenW   = 0;
+    var id        = "";
+    var color     = 1;
+    var colorAux  = "";
+    var isIE      = /*@cc_on!@*/false || !!document.documentMode;
     
     //criando gráfico
+    var progress = null;
     for(var i=0; i<dataTable.length; i++) {
-        var progress = calcProgress(options.mode.type, new Date(options.time.start), new Date(dataTable[i].start), new Date(dataTable[i].end));
-        
-        console.log(dataTable[i].start + " - " + dataTable[i].end);
+        progress = calcProgress(options.mode.type, 
+                                new Date(options.time.start), 
+                                new Date(dataTable[i].start), 
+                                new Date(dataTable[i].end));
         
         if (dataTable[i].id === id) {
             htmlData += "<section class='data' style='background-color: " + colorAux + "; left: " + progress[0] + "px; width: " + progress[1] + "px;'><section><h4 style='color: " + colorAux + "'>" + dataTable[i].value + "</h4><p>Period: " + progress[2] + "</p><p>Duration: " + progress[3] + "</p></section></section>";
         } else {
             htmlProc = htmlProc.replace("@data" + id, htmlData);
             
-            id       = dataTable[i].id;
-            colorAux = randomColor(dataTable[i].background, color);
-            dataAux  = new Date(options.time.start);
-            htmlData = "<section class='data' style='background-color: " + colorAux + "; left: " + progress[0] + "px; width: " + progress[1] + "px;'><section><h4 style='color: " + colorAux + "'>" + dataTable[i].value + "</h4><p>Period: " + progress[2] + "</p><p>Duration: " + progress[3] + "</p></section></section>";   
-            htmlProc += "<div><section class='id'>" + stringLimit(dataTable[i].value) + "</section>@data" + id + "<ul>";
+            id        = dataTable[i].id;
+            colorAux  = randomColor(dataTable[i].background, color);
+            dataAux   = new Date(options.time.start);
+            htmlData  = "<section class='data' style='background-color: " + colorAux + "; left: " + progress[0] + "px; width: " + progress[1] + "px;'><section><h4 style='color: " + colorAux + "'>" + dataTable[i].value + "</h4><p>Period: " + progress[2] + "</p><p>Duration: " + progress[3] + "</p></section></section>";   
+            htmlProc  += "<div><section class='id'>" + stringLimit(dataTable[i].value) + "</section>@data" + id + "<ul>";
         
             while(dataAux <= new Date(options.time.end)) {
                 htmlProc += "<li class='" + options.mode.type + "'></li>";
@@ -174,12 +175,9 @@ function drawChart(dataTable, options){
                     }
                     case "day": {                   
                         if (i === 0) {
-                            if (isIE) {
-                                htmlSubt += "<li class='" + options.mode.type + "'><span>" + dataAux.toLocaleDateString().substring(1,3) + "</span></li>";
-                            } else {
-                                htmlSubt += "<li class='" + options.mode.type + "'><span>" + dataAux.toLocaleDateString().substring(0,2) + "</span></li>";
-                            }
-                            screenW = 48;
+                            dataLocal = (isIE) ? dataAux.toLocaleDateString().substring(1,3) : dataAux.toLocaleDateString().substring(0,2);
+                            htmlSubt += "<li class='" + options.mode.type + "'><span>" + dataLocal + "</span></li>";
+                            screenW   = 48;
                         }
 
                         dataAux.setDate(dataAux.getDate() + 1);
@@ -187,12 +185,9 @@ function drawChart(dataTable, options){
                     }
                     case "hour": {                    
                         if (i === 0) {
-                            if (isIE) {
-                                htmlSubt += "<li class='" + options.mode.type + "'><span>" + dataAux.toLocaleTimeString().substring(1,8) + "</span></li>";
-                            } else {
-                                htmlSubt += "<li class='" + options.mode.type + "'><span>" + dataAux.toLocaleTimeString().substring(0,5) + "</span></li>";
-                            }
-                            screenW = 60;
+                            dataLocal = (isIE) ? dataAux.toLocaleDateString().substring(1,8) : dataAux.toLocaleDateString().substring(0,5);
+                            htmlSubt += "<li class='" + options.mode.type + "'><span>" + dataLocal + "</span></li>";
+                            screenW   = 60;
                         }
 
                         dataAux.setHours(dataAux.getHours() + 1);
@@ -202,6 +197,7 @@ function drawChart(dataTable, options){
             }
             
             htmlProc += "</ul></div>";
+            
 
             if (color < arrayColor.length) {
                 ++color;
@@ -215,7 +211,7 @@ function drawChart(dataTable, options){
     
     //configurando gráfico
     document.getElementById("chart_title").innerHTML = options.title.value;
-    document.getElementById("chart_data").innerHTML = htmlProc + htmlSubt + "</ul></div>";
+    document.getElementById("chart_data").innerHTML  = htmlProc + htmlSubt + "</ul></div>";
     
     var objData = document.getElementById("chart_data").getElementsByTagName("div");
     screenW += screenW * document.getElementsByClassName("subtitle")[0].childNodes[0].getElementsByTagName("span").length;
